@@ -6,12 +6,18 @@ load_dotenv(override=True)
 
 VIEW_PATH = Path(__file__).parent / 'view'
 
-page_list = [
-    st.Page(str(VIEW_PATH / 'chat.py'), title='Chat', default=True),
-]
+st.write(VIEW_PATH)
+st.write(VIEW_PATH / 'chat.py')
+st.write((VIEW_PATH / 'chat.py').exists())
+st.write(type(VIEW_PATH / 'chat.py'))
+st.write(type(str(VIEW_PATH / 'chat.py')))
 
-def get_page(title: str = None):
-    return next(filter(lambda x: x.title == title, page_list))
+# page_list = [
+#     st.Page(str(VIEW_PATH / 'chat.py'), title='Chat', default=True),
+# ]
 
-pages = st.navigation(page_list, position='top',)
-pages.run()
+# def get_page(title: str = None):
+#     return next(filter(lambda x: x.title == title, page_list))
+
+# pages = st.navigation(page_list, position='top',)
+# pages.run()
