@@ -21,6 +21,8 @@ if 'chat' not in st.session_state:
     st.session_state.chat = None
     st.session_state.chat_index = 0
 
+
+
 with st.sidebar:
     st.text_input('Gemini API Key', key='api_key')
 

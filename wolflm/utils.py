@@ -6,6 +6,11 @@ from pathlib import Path
 SKILLS_PATH = Path(__file__).parent / 'skills'
 CHATS_PATH = Path(__file__).parent / 'chats'
 
+if str(SKILLS_PATH).startswith('wolflm'):
+    SKILLS_PATH = Path('skills')
+
+if str(CHATS_PATH).startswith('wolflm'):
+    CHATS_PATH = Path('chats')
 
 def abstract_decorator(method):
     @wraps(method)
