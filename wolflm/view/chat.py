@@ -26,7 +26,7 @@ with st.sidebar:
     st.text_input('Gemini API Key', key='api_key')
 
     kwargs = {'type': 'tertiary'}
-    with st.popover('Nova Conversa', **kwargs):
+    with st.popover('Nova Conversa'):
         st.write('Você irá perder qualquer mensagem de chat não salva, prosseguir?')
         if st.button('Sim', **kwargs):
             st.session_state.skill = None
