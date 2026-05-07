@@ -1,4 +1,4 @@
-from wolflm.controller.wolfchat import get_model, get_chat, save_chat, generate_standard_chat
+from wolflm.controller.wolfchat import get_model, get_chat, generate_standard_chat
 from wolflm.view.presentation_helper import generate_presentation_helper
 from wolflm.view.prompt_builder import generate_prompt_builder
 from wolflm.model import user_prompt_to_message
@@ -20,7 +20,6 @@ if 'skill' not in st.session_state:
 if 'chat' not in st.session_state:
     st.session_state.chat = None
     st.session_state.chat_index = 0
-
 
 
 with st.sidebar:
@@ -52,7 +51,7 @@ with st.sidebar:
     # Definição de Conversa
     # =====================
     with st.expander('Conversas'):
-        chat = get_chat()
+        get_chat()
 
 # ==================
 # Seleção de Modelos
@@ -62,11 +61,11 @@ with cols[0]:
     model_name = ModelBase.query(f'CodeStr == "{st.session_state.model}"').Name.iloc[0]
     with st.expander(f'Modelo: {model_name}'):
         get_model()
-if len(chat):
+if len(st.session_state.chat):
     with cols[1]:
-        st.download_button('Salvar Chat', data=chat.to_json_str(), file_name='Chat.json')
+        st.download_button('Salvar Chat', data=st.session_state.chat.to_json_str(), file_name='Chat.json')
     with cols[2]:
-        st.download_button('Salvar Resposta', data=chat.messages[-1].content, file_name='Chat.md')
+        st.download_button('Salvar Resposta', data=st.session_state.chat.messages[-1].content, file_name='Chat.md')
 # =======================
 # Configuração de Agentes
 # =======================
@@ -75,9 +74,8 @@ if presetation_helper:
 elif prompt_builder:
     generate_prompt_builder()
 else:
-    user_prompt = generate_standard_chat(chat)
-    # st.write(chat)
+    user_prompt = generate_standard_chat()
+
     if user_prompt:
-        chat.user_message(user_prompt_to_message(text=user_prompt.text, files=user_prompt.files))
-        save_chat(chat)
+        st.session_state.chat.user_message(user_prompt_to_message(text=user_prompt.text, files=user_prompt.files))
         st.rerun()
