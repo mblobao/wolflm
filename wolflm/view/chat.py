@@ -74,8 +74,8 @@ if presetation_helper:
 elif prompt_builder:
     generate_prompt_builder()
 else:
+    st.write(st.session_state.chat)
     user_prompt = generate_standard_chat()
-
     if user_prompt:
         st.session_state.chat.user_message(user_prompt_to_message(text=user_prompt.text, files=user_prompt.files))
         st.rerun()
