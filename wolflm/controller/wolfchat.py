@@ -21,27 +21,15 @@ def get_skill(**kwargs: bool):
 
 
 def get_chat() -> Chat:
-    if CHATS_PATH.exists():
-        selected_chat = sac.tree(show_line=False,
-            items=[sac.TreeItem(str(chat_file.name[:-5])) for chat_file in CHATS_PATH.glob('*.json')],
-            index=None,
-            key=f'Tree_{st.session_state.chat_index}'
-        )
-    else:
-        selected_chat = None
-
     uploaded_chat = st.file_uploader('Upload Chat', accept_multiple_files=False, type='json',
         key=f'Uploader_{st.session_state.chat_index}'
     )
 
     if uploaded_chat is not None:
-        st.session_state.chat = Chat.load(uploaded_chat.read())
+        st.session_state[f'chat_{st.session_state.chat_index}'] = Chat.load(uploaded_chat.read())
 
-    elif selected_chat:
-        st.session_state.chat = Chat.load(CHATS_PATH / f'{selected_chat}.json')
-    
     else:
-        st.session_state.chat = Chat()
+        st.session_state[f'chat_{st.session_state.chat_index}'] = Chat()
 
 
 def get_model() -> str:
@@ -89,7 +77,7 @@ def generate_standard_chat():
     # =======================
     # Definição de Chat Geral
     # =======================
-    for message in st.session_state.chat:
+    for message in st.session_state[f'chat_{st.session_state.chat_index}']:
         avatar = 'user' if message.role.value == 'USER' else 'assistant'
         if isinstance(message.content, list):
             for part in filter(lambda x: isinstance(x, str), message.content):
@@ -97,14 +85,14 @@ def generate_standard_chat():
         elif isinstance(message.content, str):
             st.chat_message(avatar).write(message.content)
         
-    if len(st.session_state.chat) and st.session_state.chat.messages[-1].role == Role.USER:
+    if len(st.session_state[f'chat_{st.session_state.chat_index}']) and st.session_state[f'chat_{st.session_state.chat_index}'].messages[-1].role == Role.USER:
         response = generate_content(
             api_key=st.session_state.api_key,
             model=st.session_state.model,
-            chat=st.session_state.chat,
+            chat=st.session_state[f'chat_{st.session_state.chat_index}'],
             system_instruction=st.session_state.system_instruction
         )
-        st.session_state.chat.model_message(response.text)
+        st.session_state[f'chat_{st.session_state.chat_index}'].model_message(response.text)
 
         st.chat_message('assistant').write(response.text)
     

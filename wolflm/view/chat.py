@@ -18,18 +18,20 @@ if 'model' not in st.session_state:
 if 'skill' not in st.session_state:
     st.session_state.skill = None
 if 'chat' not in st.session_state:
-    st.session_state.chat = None
     st.session_state.chat_index = 0
+    st.session_state[f'chat_{st.session_state.chat_index}'] = None
 
 
 with st.sidebar:
     st.text_input('Gemini API Key', key='api_key')
 
     kwargs = {'type': 'tertiary'}
-    if st.button('Nova conversa', **kwargs):
-        st.session_state.skill = None
-        st.session_state.chat = None
-        st.session_state.chat_index += 1
+    with st.popover('Nova Conversa', **kwargs):
+        st.write('Você irá perder qualquer mensagem de chat não salva, prosseguir?')
+        if st.button('Sim', **kwargs):
+            st.session_state.skill = None
+            st.session_state[f'chat_{st.session_state.chat_index}'] = None
+            st.session_state.chat_index += 1
     
     # ===================
     # Definição de Agente
@@ -52,6 +54,7 @@ with st.sidebar:
     # =====================
     with st.expander('Conversas'):
         get_chat()
+        
 
 # ==================
 # Seleção de Modelos
@@ -61,11 +64,11 @@ with cols[0]:
     model_name = ModelBase.query(f'CodeStr == "{st.session_state.model}"').Name.iloc[0]
     with st.expander(f'Modelo: {model_name}'):
         get_model()
-if len(st.session_state.chat):
+if len(st.session_state[f'chat_{st.session_state.chat_index}']):
     with cols[1]:
-        st.download_button('Salvar Chat', data=st.session_state.chat.to_json_str(), file_name='Chat.json')
+        st.download_button('Salvar Chat', data=st.session_state[f'chat_{st.session_state.chat_index}'].to_json_str(), file_name='Chat.json')
     with cols[2]:
-        st.download_button('Salvar Resposta', data=st.session_state.chat.messages[-1].content, file_name='Chat.md')
+        st.download_button('Salvar Resposta', data=st.session_state[f'chat_{st.session_state.chat_index}'].messages[-1].content, file_name='Chat.md')
 # =======================
 # Configuração de Agentes
 # =======================
@@ -74,8 +77,8 @@ if presetation_helper:
 elif prompt_builder:
     generate_prompt_builder()
 else:
-    st.write(st.session_state.chat)
+    st.write(st.session_state[f'chat_{st.session_state.chat_index}'])
     user_prompt = generate_standard_chat()
     if user_prompt:
-        st.session_state.chat.user_message(user_prompt_to_message(text=user_prompt.text, files=user_prompt.files))
+        st.session_state[f'chat_{st.session_state.chat_index}'].user_message(user_prompt_to_message(text=user_prompt.text, files=user_prompt.files))
         st.rerun()
