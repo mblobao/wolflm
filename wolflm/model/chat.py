@@ -1,12 +1,15 @@
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 from wolflm.model.tool import ToolCall, ToolResponse
 from typing import Any, Self, overload, Union
 from wolflm.model.base import BaseModel, Role
 from chromadb.api.types import QueryResult
 from wolflm.gemini.utils import get_part
+from wolflm.utils import FILETYPES
 from google.genai import types
 from pydantic import Field
 from copy import deepcopy
 from pathlib import Path
+import base64
 
 
 MessageContentPart = Union[Path, str, dict[str, Any], ToolCall, ToolResponse]
@@ -14,7 +17,7 @@ MessageContent = Union[MessageContentPart, list[MessageContentPart]]
 
 
 class Message(BaseModel):
-    role: Role | str
+    role: str
 
     content: MessageContent
 
@@ -125,6 +128,16 @@ class Chat(BaseModel):
 
     def user_message(self, content: MessageContentPart) -> Self:
         return self.add_message(content, role=Role.USER)
+    
+    def user_prompt_message(self, text: str, files: list[UploadedFile]) -> Self:
+        parts = [text]
+
+        for file in files:
+            mime_type = FILETYPES[file.type.split('/')[1]].type
+            file_bytes = file.read()
+            parts.append({'bytes': base64.b64encode(file_bytes).decode('utf-8'), 'mime_type': mime_type, 'bytes_str': True})
+        
+        return self.user_message(parts)
     
     @overload
     def add_tool_call(self, tool_call: ToolCall) -> Self:

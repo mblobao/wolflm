@@ -2,14 +2,18 @@ from wolflm.model.tool import ToolCall, ToolResponse
 from wolflm.utils import FILETYPES
 from google.genai import types
 from pathlib import Path
+import base64
 
 
-def get_part(value: str | bytes, mime_type: str = None) -> types.Part:
+def get_part(value: str | bytes, mime_type: str = None, bytes_str: bool = False) -> types.Part:
     if isinstance(value, bytes) and mime_type is None:
         raise TypeError('Cannot set a bytes Part without a defined mime_type')
     
-    elif isinstance(value, bytes):
-        return types.Part.from_bytes(data=file_bytes, mime_type=mime_type)
+    elif isinstance(value, bytes) or bytes_str:
+        return types.Part.from_bytes(
+            data=base64.b64decode(value.encode('utf-8')) if bytes_str else value,
+            mime_type=mime_type
+        )
 
     elif (file_path := Path(value)).is_file():
         mime_type_c = FILETYPES[str(file_path).split('.')[-1].lower()].type if mime_type is None else mime_type

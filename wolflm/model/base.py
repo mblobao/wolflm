@@ -5,7 +5,7 @@ import pydantic
 import json
 
 
-class Role(Enum):
+class Role:
     SYSTEM = 'SYSTEM'
     MODEL = 'MODEL'
     USER = 'USER'

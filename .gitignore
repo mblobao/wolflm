@@ -4,6 +4,7 @@ eggs/
 .eggs/
 .build/
 .streamlit/
+chats/
 
 # Jupyter Notebook
 .ipynb_checkpoints
