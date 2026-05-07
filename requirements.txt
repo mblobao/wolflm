@@ -1,0 +1,5 @@
+setuptools
+dotenv
+google-genai
+chromadb
+tqdm

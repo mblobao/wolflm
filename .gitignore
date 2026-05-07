@@ -1,0 +1,9 @@
+__pycache__/
+*.egg-info/
+eggs/
+.eggs/
+.build/
+.streamlit/
+
+# Jupyter Notebook
+.ipynb_checkpoints
