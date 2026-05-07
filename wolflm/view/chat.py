@@ -69,6 +69,10 @@ else:
         pass
     elif len(st.session_state[f'chat_{st.session_state.chat_index}']):
         with cols[1]:
-            st.download_button('Salvar Chat', data=st.session_state[f'chat_{st.session_state.chat_index}'].to_json_str(), file_name='Chat.json')
+            with st.popover('Salvar Chat'):
+                filename = st.text_input('Nome do arquivo', 'Chat')
+                st.download_button('OK ', data=st.session_state[f'chat_{st.session_state.chat_index}'].to_json_str(), file_name=f'{filename}.json')
         with cols[2]:
-            st.download_button('Salvar Resposta', data=st.session_state[f'chat_{st.session_state.chat_index}'].messages[-1].content, file_name='Chat.md')
+            with st.popover('Salvar Resposta'):
+                filename = st.text_input('Nome do arquivo ', 'Chat')
+                st.download_button('OK  ', data=st.session_state[f'chat_{st.session_state.chat_index}'].messages[-1].content, file_name=f'{filename}.md')
