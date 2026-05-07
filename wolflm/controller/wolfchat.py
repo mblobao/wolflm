@@ -1,7 +1,8 @@
-from wolflm.utils import SKILLS_PATH, CHATS_PATH
 from wolflm.gemini.base import generate_content
 from wolflm.models import Model as ModelBase
+from google.genai.errors import ClientError
 import streamlit_antd_components as sac
+from wolflm.utils import SKILLS_PATH
 from wolflm.model.base import Role
 from wolflm.model.chat import Chat
 import streamlit as st
@@ -95,25 +96,40 @@ def generate_standard_chat():
                 st.chat_message(avatar).write(part)
         elif isinstance(message.content, str):
             st.chat_message(avatar).write(message.content)
+    
+    check_continue = True
         
     if len(st.session_state[f'chat_{st.session_state.chat_index}']) and st.session_state[f'chat_{st.session_state.chat_index}'].messages[-1].role == Role.USER:
-        with st.spinner('Pensando...'):
-            response = generate_content(
-                api_key=st.session_state.api_key,
-                model=st.session_state.model,
-                chat=st.session_state[f'chat_{st.session_state.chat_index}'],
-                system_instruction=st.session_state.system_instruction
-            )
-        st.session_state[f'chat_{st.session_state.chat_index}'].model_message(response.text)
-        st.chat_message('assistant').write(response.text)
-
+        if st.session_state.api_key is None:
+            check_continue = False
+        else:
+            try:
+                with st.spinner('Pensando...'):
+                    response = generate_content(
+                        api_key=st.session_state.api_key,
+                        model=st.session_state.model,
+                        chat=st.session_state[f'chat_{st.session_state.chat_index}'],
+                        system_instruction=st.session_state.system_instruction
+                    )
+                st.session_state[f'chat_{st.session_state.chat_index}'].model_message(response.text)
+                st.chat_message('assistant').write(response.text)
+            except (ValueError, ClientError) as e:
+                if 'api_key' in str(e) or 'API_KEY_INVALID' in str(e):
+                    check_continue = False
+                else:
+                    raise
+        
         # st.session_state[f'chat_{st.session_state.chat_index}'].model_message('Testado')
         # st.chat_message('assistant').write('Testado')
-    
-    user_prompt = st.chat_input(accept_file='multiple')
+    if check_continue:    
+        user_prompt = st.chat_input(accept_file='multiple')
 
-    if user_prompt:
-        st.session_state[f'chat_{st.session_state.chat_index}'].user_prompt_message(text=user_prompt.text, files=user_prompt.files)
-        # st.write(st.session_state[f'chat_{st.session_state.chat_index}'])
+        if user_prompt:
+            st.session_state[f'chat_{st.session_state.chat_index}'].user_prompt_message(text=user_prompt.text, files=user_prompt.files)
+            # st.write(st.session_state[f'chat_{st.session_state.chat_index}'])
 
-    return user_prompt
+        return user_prompt
+
+    else:
+        st.toast('Fornça uma chave API válida para continuar')
+        return False

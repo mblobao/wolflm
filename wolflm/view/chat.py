@@ -65,6 +65,8 @@ else:
     user_prompt = generate_standard_chat()
     if user_prompt:
         st.rerun()
+    if user_prompt is not None:
+        pass
     elif len(st.session_state[f'chat_{st.session_state.chat_index}']):
         with cols[1]:
             st.download_button('Salvar Chat', data=st.session_state[f'chat_{st.session_state.chat_index}'].to_json_str(), file_name='Chat.json')
