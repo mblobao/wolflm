@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 
-index = 'chat.py'
+index = 'index.py'
 
 os.system(f'cd "{Path(__file__).parent}" && streamlit run "{Path(__file__).parent / index}"')
 
