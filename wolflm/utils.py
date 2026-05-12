@@ -8,9 +8,9 @@ if str(SKILLS_PATH).startswith('wolflm'):
     SKILLS_PATH = Path('skills')
 
 
-PAGES_PATH = Path(__file__).parent / 'view' / 'pages'
-if str(PAGES_PATH).startswith('wolflm'):
-    VIEW_PATH = Path('view') / 'pages'
+VIEW_PATH = Path(__file__).parent / 'view'
+if str(VIEW_PATH).startswith('wolflm'):
+    VIEW_PATH = Path('view')
 
 
 class FileType(pydantic.BaseModel):

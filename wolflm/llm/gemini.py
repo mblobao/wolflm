@@ -8,6 +8,7 @@ from wolflm.chat.base import Role
 from google.genai import types
 from pathlib import Path
 import base64
+import os
 
 
 def generate_content(
