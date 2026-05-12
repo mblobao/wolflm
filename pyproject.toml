@@ -1,0 +1,22 @@
+[project]
+name = "wolflm"
+version = "0.0.0"
+description = "A LLM Chat library with streamlit app"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+authors = [
+    {name="Marcel Britto Lobão", email="marcelblobao@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICENSE"]
+
+[build-system]
+requires = ["setuptools>=80.9.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+repository = "https://github.com/mblobao/wolflm"

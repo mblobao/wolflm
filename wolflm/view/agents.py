@@ -1,7 +1,26 @@
-from wolflm.controller.prompt_builder import generate_prompt, assembly_prompt
+from wolflm.controller.prompt_builder import assembly_prompt, generate_prompt
+from wolflm.controller.presentation_helper import presentation_helper_process
 import streamlit as st
 
-st.set_page_config(page_title="Construtor de Prompts para LLM", page_icon="🤖", layout="wide")
+
+def generate_presentation_helper():
+    st.title("Auxiliador de Apresentação")
+    colunas = st.columns(2)
+
+    with colunas[0]:
+        descricao = st.text_area('Descreva sua apresentação')
+        contexto = st.text_area('Descreva o Contexto da Apresentação')
+
+    with colunas[1]:
+        files = st.file_uploader('Upload', accept_multiple_files=True)
+        publico = st.text_input('Descreva o Público Alvo')
+        objetivo = st.text_input('Descreva o Objetivo da Apresentação')
+        tempo = st.number_input('Tempo Estimado de Apresentação em minutos', min_value=0,)
+
+    if st.button('🚀 Gerar', type='primary'):
+        presentation_helper_process(descricao, contexto, files, publico, objetivo)
+
+
 
 def generate_prompt_builder():
     st.title("🤖 Construtor de Prompts para LLM")

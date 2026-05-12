@@ -1,10 +1,15 @@
-__pycache__/
-*.egg-info/
-eggs/
-.eggs/
-.build/
+# testing folders
 .streamlit/
 chats/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# Cache
+__pycache__/
+
+# Instalation Folders
+*.egg-info/
+eggs/
+.eggs/
+.build/

@@ -1,6 +1,6 @@
+from wolflm.chat.rag.loaders import Document
 from typing import Literal, Optional, Self
-from wolflm.model.rag.loaders import Document
-from wolflm.model.chat import Chat
+from wolflm.chat import Chat
 from copy import deepcopy
 from pathlib import Path
 from google import genai

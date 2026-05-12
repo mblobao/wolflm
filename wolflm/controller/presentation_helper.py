@@ -25,7 +25,7 @@ def get_system_prompt():
     )
 
 
-def process(descricao, contexto, files, publico, objetivo):
+def presentation_helper_process(descricao, contexto, files, publico, objetivo):
     # progress = st.progress(0, text="Processando...")
     (
         contexto_0, papel, tarefa, formato, restricoes, tom, publico_0, raciocinio,

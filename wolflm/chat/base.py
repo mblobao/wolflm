@@ -1,32 +1,31 @@
 from pathlib import Path
 from typing import Self
-from enum import Enum
 import pydantic
 import json
 
 
 class Role:
-    SYSTEM = 'SYSTEM'
-    MODEL = 'MODEL'
-    USER = 'USER'
-    TOOL = 'TOOL'
+    SYSTEM = 'system'
+    MODEL = 'model'
+    USER = 'user'
+    TOOL = 'tool'
 
     @classmethod
     def set_role(cls, value: str | Self) -> Self:
         if not isinstance(value, (str, cls)):
             raise ValueError(f'Unrecognized role {value}')
         if isinstance(value, str):
-            if value.upper() in ('SYSTEM', 'DEVELOPER'):
+            if value.lower() in ('system', 'developer'):
                 return cls.SYSTEM
-            elif value.upper() in ('MODEL', 'ASSISTANT'):
+            elif value.lower() in ('model', 'assistant'):
                 return cls.MODEL
-            elif value.upper() in ('USER',):
+            elif value.lower() in ('user', 'human'):
                 return cls.USER
-            elif value.upper() in ('TOOL',):
+            elif value.lower() in ('tool', 'function'):
                 return cls.TOOL
         elif isinstance(value, cls):
             return value
-        
+
 
 class JsonEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -48,7 +47,7 @@ class BaseModel(pydantic.BaseModel):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.model_dump(mode='python'), f, ensure_ascii=False, indent=4, cls=JsonEncoder)
     
-    def to_json_str(self) -> str:
+    def json_dumps(self) -> str:
         return json.dumps(self.model_dump(mode='python'), ensure_ascii=False, indent=4, cls=JsonEncoder)
 
     @classmethod
@@ -58,4 +57,3 @@ class BaseModel(pydantic.BaseModel):
         elif Path(path).exists():
             with open(path, 'r', encoding='utf-8') as f:
                 return cls.model_validate(json.load(f))
-    

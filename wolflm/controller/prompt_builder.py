@@ -1,7 +1,7 @@
-from wolflm.gemini.base import generate_content
-from wolflm.model.chat import Chat
+from wolflm.controller import generate_content
+from wolflm.chat import Chat
 from pathlib import Path
-import os
+import streamlit as st
 
 
 def assembly_prompt(
@@ -40,12 +40,12 @@ def assembly_prompt(
     return "\n\n".join(prompt_parts)
 
 
-def generate_prompt(prompt_final, descricao):
+def generate_prompt(prompt_final: str, descricao: str) -> str:
     with open(Path(__file__).parent.parent / 'skills' / 'prompt_builder.md', 'r', encoding='utf-8') as f:
         system_instruction = f.read()
+    
     response = generate_content(
-        model='gemini-2.5-pro',
-        chat=Chat().user_message(f'{prompt_final}\n\n{descricao}'),
+        chat=Chat().user_message([descricao, prompt_final]),
         system_instruction=system_instruction,
         thinking=True
     )

@@ -1,10 +1,10 @@
-from dataclasses import dataclass
+from typing import Any, ClassVar
 import pandas as pd
+import pydantic
 
 
-@dataclass(frozen=True, eq=False)
-class Model:
-    DataSet = pd.DataFrame()
+class Model(pydantic.BaseModel):
+    DataSet: ClassVar[pd.DataFrame] = pd.DataFrame()
 
     Name: str
     Family: str
@@ -37,14 +37,14 @@ class Model:
     Maps: bool = False
     Code: bool = False
 
-    def __post_init__(self) -> None:
+    def model_post_init(self, context: Any) -> None:
         cls = type(self)
         cls.DataSet = pd.concat(axis=0,
             objs=[cls.DataSet, pd.DataFrame(self.__dict__, index=[0])]
         ).reset_index(drop=True)
 
     @classmethod
-    def query(cls, qry: str):
+    def query(cls, qry: str) -> pd.DataFrame:
         return cls.DataSet.query(qry)
 
 

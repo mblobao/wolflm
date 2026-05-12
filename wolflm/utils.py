@@ -1,26 +1,19 @@
-from dataclasses import dataclass
 from functools import wraps
 from pathlib import Path
+import pydantic
 
 
 SKILLS_PATH = Path(__file__).parent / 'skills'
-CHATS_PATH = Path(__file__).parent / 'chats'
-
 if str(SKILLS_PATH).startswith('wolflm'):
     SKILLS_PATH = Path('skills')
 
-if str(CHATS_PATH).startswith('wolflm'):
-    CHATS_PATH = Path('chats')
 
-def abstract_decorator(method):
-    @wraps(method)
-    def decorator(self, *args, **kwargs):
-        raise NotImplementedError(f'method {method.__name__} must be implemented for class {type(self).__name__}')
-    return decorator
+PAGES_PATH = Path(__file__).parent / 'view' / 'pages'
+if str(PAGES_PATH).startswith('wolflm'):
+    VIEW_PATH = Path('view') / 'pages'
 
 
-@dataclass(frozen=True, eq=False)
-class FileType:
+class FileType(pydantic.BaseModel):
     type: str
     text: bool
     image: bool
@@ -48,3 +41,10 @@ FILETYPES = {
 }
 
 TYPEVALUES = {f.type: f for f in FILETYPES.values()}
+
+
+def abstract_decorator(method):
+    @wraps(method)
+    def decorator(self, *args, **kwargs):
+        raise NotImplementedError(f'method {method.__name__} must be implemented for class {type(self).__name__}')
+    return decorator

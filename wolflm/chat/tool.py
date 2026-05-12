@@ -1,5 +1,5 @@
 from typing import Any, Callable, Literal, Self
-from wolflm.model.base import BaseModel
+from wolflm.chat.base import BaseModel
 from google.genai import types
 from pydantic import Field
 
