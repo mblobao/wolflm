@@ -1,5 +1,3 @@
-from posthog import page
-
 from wolflm.utils import VIEW_PATH
 from pathlib import Path
 import streamlit as st
